@@ -15,6 +15,7 @@
  *
  */
 define('person', ['order'],
+
     function (order) {
 
     /**
@@ -81,6 +82,14 @@ define('person', ['order'],
             }
 
         };
+
+        this.withOrderNo = function (orderNo) {
+            if (orderNo < _orders.length) { return _orders[orderNo]; }
+        };
+
+        this.numberOfOrder = function () {
+            return _orders.length;
+        }
 
         /* now we just identify by name */
         this.isEqualTo = function (obj) {

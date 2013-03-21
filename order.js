@@ -50,9 +50,17 @@ define('order', [], function () {
             }
         }
 
+        this.withLineNo = function (lineNumber) {
+            if (lineNumber < _lines.length) { return _lines[lineNumber]; }
+        }
+
         this.isEqualTo = function (obj) {
             if (!(obj instanceof Order)) { return false; }
             return (_id === obj.withId());
+        }
+
+        this.length = function () {
+            return _lines.length;
         }
 
         return this;
