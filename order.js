@@ -1,9 +1,7 @@
 /**
- * Created with JetBrains WebStorm.
- * User: tuna
+ * Author: tuna
  * Date: 3/21/13
  * Time: 9:33 AM
- * To change this template use File | Settings | File Templates.
  */
 /**
  * order is an ENTITY

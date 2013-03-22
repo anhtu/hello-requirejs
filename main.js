@@ -1,15 +1,21 @@
 /**
- * Created with JetBrains WebStorm.
  * User: tuna
  * Date: 3/21/13
  * Time: 5:49 PM
- * To change this template use File | Settings | File Templates.
  */
+
 /* the entry point to app - main module
  *
  * init the models
  *
  * invoke the views to display models
+ * TODO: introduce couchdb into the application - got problem because of
+ * tough installation of couchdb
+ * [OK]: introduce requirejs - seems ok at the moment
+ * TODO: introduce MVC
+ * TODO: introduce twitter bootstrap for better design
+ * TODO: introduce nodejs
+ * TODO: introduce LESS for css
  *
  * */
 
@@ -68,6 +74,12 @@
     view.renderListPerson(personList, $("#personView"));
 
 
+    /**
+     * think about what model to update the data
+     * when the data changes then the model notifies the view
+     * or when the controller changes the data, the controller notifies the view
+     *
+     */
     /*===== controlling action in page  =====*/
     /* click on #addPersonButton */
     $("#addPersonButton").click(

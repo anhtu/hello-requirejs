@@ -12,13 +12,6 @@
  * order module is defined before person module because of dependency from
  * person to order
  *
- * TODO: introduce couchdb into the application - got problem because of
- * tough installation of couchdb
- * TODO: introduce requirejs
- * TODO: introduce MVC
- * TODO: introduce twitter bootstrap for better design
- * TODO: introduce nodejs
- * TODO: introduce LESS for css
  *
  */
 var order = (function () {

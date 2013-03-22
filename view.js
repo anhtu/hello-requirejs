@@ -1,14 +1,25 @@
 /**
- * Created with JetBrains WebStorm.
  * User: anhtu
  * Date: 3/21/13
  * Time: 10:25 PM
- * To change this template use File | Settings | File Templates.
  */
 /* init the view to display john
  *
  * at this moment we need jquery to better manipulate the DOM
  *
+ * TODO: data-binding
+ *
+ * we need a solution kind of data binding because we can not have too much
+ * dependency between view and model
+ * if view change then model is dead
+ * ==> JSON might be a great format for data interchange
+ *
+ * our architecture can be like
+ *
+ * the controller change the model then transform the model into JSON format
+ * (another benefit of this kind of things is that this format is readable only)
+ *
+ * the view find the data binding matching of JSON and parse the data
  *
  * */
 define('view', ['person', 'order'],

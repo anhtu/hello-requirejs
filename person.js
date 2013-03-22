@@ -1,9 +1,7 @@
 /**
- * Created with JetBrains WebStorm.
- * User: tuna
+ * User: anhtu
  * Date: 3/21/13
  * Time: 9:12 AM
- * To change this template use File | Settings | File Templates.
  */
 
 /**
