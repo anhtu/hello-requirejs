@@ -17,6 +17,9 @@
  * TODO: introduce nodejs
  * TODO: introduce LESS for css
  *
+ * TODO: introduce unit testing - jsmockito
+ * TODO: introduce logging - consul.js of berry
+ *
  * */
 
 (function() {
@@ -29,9 +32,12 @@
         }
     );
 
-    require(['person', 'order', 'jquery', 'view'],
+    require(['person', 'order', 'jquery', 'view', 'test'],
 
-    function (person, order, $, view) {
+    function (person, order, $, view, test) {
+
+    /*=== run the test first ===*/
+    test.test_orderline_toString();
 
     /*===== init the model =====*/
     var Person    = person.Person;

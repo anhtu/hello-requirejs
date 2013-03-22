@@ -55,11 +55,26 @@ define('order', [], function () {
         this.isEqualTo = function (obj) {
             if (!(obj instanceof Order)) { return false; }
             return (_id === obj.withId());
-        }
+        };
 
         this.length = function () {
             return _lines.length;
-        }
+        };
+
+        /* returns JSON representation */
+        this.toString = function () {
+
+            var lines = new Array(),
+                i, aLine;
+            for (i = 0; aLine = _lines[i] ; i++) {
+                lines.push(aLine.toString());
+            }
+
+            return {
+                id    : _id,
+                lines : lines
+            };
+        };
 
         return this;
     };
@@ -85,6 +100,14 @@ define('order', [], function () {
             return _quantity;
         };
 
+        /* returns a JSON representation of object */
+        this.toString = function () {
+            return {
+                quantity  : _quantity,
+                productId : _productId
+            };
+        };
+
         return this;
     };
 
@@ -92,6 +115,5 @@ define('order', [], function () {
         Order     : Order,
         OrderLine : OrderLine
     };
-
 
 });

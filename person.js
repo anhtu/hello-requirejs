@@ -87,13 +87,23 @@ define('person', ['order'],
 
         this.numberOfOrder = function () {
             return _orders.length;
-        }
+        };
 
         /* now we just identify by name */
         this.isEqualTo = function (obj) {
             if (!(obj instanceof Person)) { return false; }
             return (_name === obj.withName());
-        }
+        };
+
+        /**
+         * returns a readable JSON representation of object
+         **/
+        this.toString = function () {
+            return {
+                name    : _name,
+                address : _address
+            };
+        };
 
         return this;
     };
