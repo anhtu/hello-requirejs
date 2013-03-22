@@ -23,17 +23,19 @@
         }
     );
 
-    require(['person', 'order', 'jquery'],
+    require(['person', 'order', 'jquery', 'view'],
 
-    function (person, order, $) {
+    function (person, order, $, view) {
 
-    /* init the model */
+    /*===== init the model =====*/
     var Person    = person.Person;
     var Order     = order.Order;
     var OrderLine = order.OrderLine;
 
     /* create a new Person */
-    var john = new Person();
+    var john  = new Person(),
+        peter = new Person(),
+        personList = new Array();
 
     john.name("john")
         .address("40 Giang vo street")
@@ -42,8 +44,17 @@
             .line(5, "Samsung Galaxy Note 2")
         .newOrder("12346")
             .line(10, "Apple Mac Book")
-            .line(2, "Google Nexus 7");
+            .line(2, "Google Nexus 7")
+        .newOrder("12347")
+            .line(2, "Galaxy Nexus")
+            .line(3, "Nokia i9000")
+            .line(1, "Sony Xperia");
+    personList.push(john);
     console.log("name: " + john.withName() + " - address: " + john.withAddress());
+
+    peter.name("peter")
+        .address("111 Giang Vo");
+    personList.push(peter);
 
     //var order12345 = john.withOrder("12345");
     //console.log("line mac book : " + order12345.withLine("Apple Mac Book").withProduct());
@@ -53,55 +64,26 @@
 
     //console.log(order12345.isEqualTo(order12346));
 
-    /* init the view to display john
-     *
-     * at this moment we need jquery to better manipulate the DOM
-     *
-     *
-     * */
-      var renderPerson = function (aPerson, DOMelement) {
-        if ((aPerson === null) || (!(aPerson instanceof Person)) ) { return ; }
+    /*===== view the person =====*/
+    view.renderListPerson(personList, $("#personView"));
 
-        var personView = '<div><h4>' + aPerson.withName() + '</h4>'
-            + '<p>' + aPerson.withAddress() + '</p></div>';
 
-        var i;
-        for (i = 0; i < aPerson.numberOfOrder(); i++) {
-            personView += renderOrder(aPerson.withOrderNo(i));
+    /*===== controlling action in page  =====*/
+    /* click on #addPersonButton */
+    $("#addPersonButton").click(
+        function () {
+
+            /* calls the model */
+            var personName = $(this).siblings("#addPersonInput")[0].value;
+            console.log(personName);
+            var newPerson = new Person;
+            newPerson.name(personName);
+
+            /* call to update the view */
+            view.renderPerson(newPerson, $("#personView"));
         }
+    );
 
-        personView += '</div>';
-
-        /* we use append since html will override the whole element
-         * we might have to add more people in the same div
-         *
-         * */
-        DOMelement.append(personView);
-    };
-
-    var renderOrder = function (anOrder) {
-        if ((anOrder === null) || (!(anOrder instanceof  Order)) ) { return; }
-
-        var orderView = '<div><h4>' + anOrder.withId() + '<h4><lu>';
-
-        var i;
-        for (i = 0; i < anOrder.length(); i++) {
-            console.log(renderOrderLine(anOrder.withLineNo(i)));
-            orderView = orderView + renderOrderLine(anOrder.withLineNo(i));
-        }
-        orderView += '</lu></div>';
-        return orderView;
-    };
-
-    var renderOrderLine = function (orderLine) {
-        if ((orderLine === null) || (!(orderLine instanceof  OrderLine)) ) { return; }
-
-        var orderLineView = '<li>' + orderLine.withProduct() + ' - ' + orderLine.withQuantity() + '</li>';
-        return orderLineView;
-    };
-
-    renderPerson(john, $("#personView"));
-    renderOrder(john.withOrder("12345"), $("#orderView"));
     });
 
 })();
