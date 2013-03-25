@@ -1,0 +1,43 @@
+<html>
+<head>
+	<title>hello ajax</title>
+</head>
+<body>
+<h4>hello ajax</h4>
+<script type="text/javascript">
+
+  console.log("hello ajax");
+
+  var req = new XMLHttpRequest(); // readyState 0 - unsent
+  console.log("readyState : " + req.readyState); 
+  req.onreadystatechange = function () {
+    
+    console.log("state changed : " + req.readyState);
+
+    if (req.readyState === 4) {
+    	var responseHeaders = req.getAllResponseHeaders();
+    	console.log(" reponse header: " + responseHeaders);
+    	var data = req.responseText;
+    	console.log(" reponseText: " + data);
+      /**
+        reponse header: Date: Mon, 25 Mar 2013 08:36:36 GMT
+        Connection: keep-alive
+        Transfer-Encoding: chunked
+        Content-Type: text/html
+         reponseText: <html>
+        response from ajax
+        </html> 
+      **/
+    }
+  };
+
+  req.open("GET", "index.html"); // 1 - opened
+  
+  // X-Requested-With', 'XMLHttpRequest - to identify this is an ajax request
+  req.setRequestHeader('X-Requested-With', 'XMLHttpRequest'); 
+
+  req.send(null); // 2
+  
+</script>	
+</body>
+</html>
