@@ -1,0 +1,109 @@
+/**
+ * Author: tuna
+ * Date: 3/21/13
+ * Time: 9:33 AM
+ */
+/**
+ * order is an ENTITY
+ *
+ * order module is defined before person module because of dependency from
+ * person to order
+ *
+ * use requiresjs to load module
+ */
+
+/**
+ * order is an ENTITY
+ *
+ * because Order is an entity, its instance has a way to compare itself with other
+ * instances ==> isEqualTo
+ */
+exports.Order = function(id) {
+
+        var
+            _id = id,
+
+        /* order is a collection of order lines */
+            _lines = new Array();
+
+        /* getter for id */
+        this.withId = function () {
+            return _id;
+        };
+
+        /* setter for order line */
+        this.line = function (quantity, productId) {
+            var orderLine = new OrderLine(quantity, productId);
+            _lines.push(orderLine);
+        };
+
+        /* getter for line */
+        this.withLine = function (productId) {
+            var i;
+            for (i = 0; i < _lines.length; i++) {
+                if (_lines[i].withProduct() === productId) {
+                    return _lines[i];
+                }
+            }
+        }
+
+        this.withLineNo = function (lineNumber) {
+            if (lineNumber < _lines.length) { return _lines[lineNumber]; }
+        }
+
+        this.isEqualTo = function (obj) {
+            if (!(obj instanceof Order)) { return false; }
+            return (_id === obj.withId());
+        };
+
+        this.length = function () {
+            return _lines.length;
+        };
+
+        /* returns JSON representation */
+        this.toString = function () {
+
+            var lines = new Array(),
+                i, aLine;
+            for (i = 0; aLine = _lines[i] ; i++) {
+                lines.push(aLine.toString());
+            }
+
+            return {
+                id    : _id,
+                lines : lines
+            };
+        };
+
+};
+
+    /**
+     * OrderLine is a value object
+     *
+     * @param quantity
+     * @param productId
+     * @return {*}
+     * @constructor
+     */
+var OrderLine = exports.OrderLine = function (quantity, productId) {
+        var _quantity = quantity;
+        var _productId = productId;
+
+        /* getter */
+        this.withProduct = function () {
+            return _productId;
+        };
+
+        this.withQuantity = function () {
+            return _quantity;
+        };
+
+        /* returns a JSON representation of object */
+        this.toString = function () {
+            return {
+                quantity  : _quantity,
+                productId : _productId
+            };
+        };
+
+};

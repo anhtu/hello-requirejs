@@ -14,7 +14,7 @@
  * [OK]: introduce requirejs - seems ok at the moment
  * TODO: introduce MVC
  * TODO: introduce twitter bootstrap for better design
- * TODO: introduce nodejs
+ * [OK]: introduce nodejs
  * TODO: introduce LESS for css
  *
  * TODO: introduce unit testing - jsmockito
@@ -37,7 +37,7 @@
     function (person, order, $, view, test) {
 
     /*=== run the test first ===*/
-    test.test_orderline_toString();
+    //test.test_orderline_toString();
 
     /*===== init the model =====*/
     var Person    = person.Person;
