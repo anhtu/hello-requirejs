@@ -55,6 +55,13 @@
     </script>
 
     <a href="#add">Add person</a>
+    <div id="addPerson"></div>
+    <script type="text/template" id="addPerson-template">
+        <input type="text" value="Add person" />
+        <button type="button" value="name"></button>
+    </script>
+
+    <a href="#">Return home</a>
 
 <script type="text/javascript">
 
@@ -97,7 +104,6 @@
         peter = new Person({ name : "perter", age : 23 });
 
     var employees = new People([john]).add(peter);
-
 
     console.log("new person : " + john.get("name") + " - " + john.get("age") + " - " + john.get("address"));
 
@@ -177,11 +183,24 @@
     });
 
 
-    var johnContactView = new PersonContactView({ model : john }), // this model parameter is accessed by view.options.model
-        johnDetailView  = new PersonDetailView({ model: john });
+    var AddPersonView = Backbone.View.extend({
+        el : $("#addPerson"),
 
-    john.get("views").push(johnContactView);
-    john.get("views").push(johnDetailView);
+        initialize : function () {
+            console.log("AddPersonView - init");
+            this.render();
+        },
+
+        render : function () {
+            var template = _.template( $("#addPerson-template").html() );
+            this.$el.html( template({}) );
+            return this;
+        },
+
+        events : {
+
+        }
+    });
 
     var AppRouter = Backbone.Router.extend({
         routes : { /* url mapping to function */
@@ -193,10 +212,19 @@
 
         home : function () {
             console.log("routing to home");
+
+            var johnContactView = new PersonContactView({ model : john }), // this model parameter is accessed by view.options.model
+                johnDetailView  = new PersonDetailView({ model: john });
+
+            john.get("views").push(johnContactView);
+            john.get("views").push(johnDetailView);
         },
 
         add : function () {
             console.log("routing to add");
+
+            var addPersonView = new AddPersonView();
+
         },
 
         showPerson : function (name) {
