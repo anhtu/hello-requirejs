@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>hello backbone</title>
+    <script src="lib/jquery-1.8.2.min.js" type="text/javascript"></script>
+    <script src="lib/json2.js" type="text/javascript"></script>
+    <script src="lib/underscore-min.js" type="text/javascript"></script>
+    <script src="lib/backbone-min.js" type="text/javascript"></script>
+</head>
+<body>
+    <h4>Hello backbone js</h4>
+    <div id="personContact"></div>
+
+    <script type="text/template" id="personContact-template">
+        <table>
+            <tr>
+                <td><%= name %></td>
+                <td><%= age %></td>
+                <td><%= address %></td>
+            </tr>
+        </table>
+    </script>
+
+    <br/>
+    <div id="personDetail"></div>
+
+    <script type="text/template" id="personDetail-template">
+        <table class="show">
+            <tr><th><%= name %></th></tr>
+            <tr>
+                <td>Age : </td>
+                <td><%= age %></td>
+            </tr>
+            <tr>
+                <td>Address : </td>
+                <td><%= address %></td>
+            </tr>
+        </table>
+
+        <table class="edit" style="display : none">
+            <tr><th><input type="text" data="name" value="Your name"/></th></tr>
+            <tr>
+                <td>Age : </td>
+                <td><input type="text" data="age" value="Your age"/></td>
+            </tr>
+            <tr>
+                <td>Address : </td>
+                <td><input type="text" data="address" value="Your address"/></td>
+            </tr>
+            <tr>
+                <td><button type="button" id='updatePersonDetail'>update</button></td>
+                <td><button type="button" id='cancelPersonDetail'>cancel</button></td>
+            </tr>
+        </table>
+    </script>
+
+    <a href="#add">Add person</a>
+
+<script type="text/javascript">
+
+    /* Person property is encapsulated */
+    var Person = Backbone.Model.extend({
+
+        defaults : {
+            name : "NA",
+            age  : 0,
+            address : "NA",
+            views : []
+        },
+
+
+        /* called every time the constructor is called */
+        initialize : function () {
+            console.log("init a new instance");
+            // set a listener, this one can be called to update the view
+            this.on("change", function () { /* setter should start with change:<name_of_attribute> */
+                console.log("updated attribute");
+
+                /* this should do a POST request */
+
+                /* update the view */
+                var views = this.get("views");
+                _.each(views, function (view) {
+                    view.render();
+                });
+            });
+        }
+
+    });
+
+    var People = Backbone.Collection.extend({
+        model : Person,  // collection of Person model
+        url   : "#"
+    });
+
+    var john  = new Person({ name : "john"  , age : 22 }),
+        peter = new Person({ name : "perter", age : 23 });
+
+    var employees = new People([john]).add(peter);
+
+
+    console.log("new person : " + john.get("name") + " - " + john.get("age") + " - " + john.get("address"));
+
+    john.set("name", "John Smith"); // john.name - undefined
+
+    var PersonContactView = Backbone.View.extend({
+        el : $("#personContact"),
+
+        initialize : function () {
+            this.render();
+        },
+
+        render : function (event) {
+            var template = _.template( $("#personContact-template").html()),
+                _model = this.options.model;
+            this.$el.html(template( _model.toJSON() ));
+            return this;
+        },
+
+        events : {
+            "click" : "editContact"
+        },
+
+        editContact : function (event) {
+            console.log("editing the person contact");
+        }
+    });
+
+    var PersonDetailView = Backbone.View.extend({
+        el : $("#personDetail"),
+
+        initialize : function () {
+            this.render();
+        },
+
+        render : function (event) {
+            console.log("render person detail view");
+            var template = _.template( $("#personDetail-template").html()),
+                model    = this.options.model;
+            this.$el.html(template( model.toJSON() ));
+            return this;
+        },
+
+        events : {
+            "click .show" : "editPersonDetail",
+            "click #updatePersonDetail" : "updatePersonDetail"
+        },
+
+        editPersonDetail : function (event) {
+            console.log("editPersonDetail");
+            var showForm = $("#personDetail").children(".show")[0],
+                editForm = $("#personDetail").children(".edit")[0];
+
+            /* show edit class */
+            $(showForm).hide();
+            $(editForm).show();
+        },
+
+        updatePersonDetail : function (event) {
+            console.log("updatePersonDetail");
+
+            var attributes = this.$el.find("[data]"),
+                person     = this.options.model;
+            _.each(attributes, function (attribute) {
+                var attrName  = $(attribute).attr("data"),
+                    attrValue = $(attribute).attr("value");
+                person.set(attrName, attrValue);
+            });
+
+            /* update ok */
+            var showForm = $("#personDetail").children(".show")[0],
+                editForm = $("#personDetail").children(".edit")[0];
+
+            $(showForm).show();
+            $(editForm).hide();
+        }
+    });
+
+
+    var johnContactView = new PersonContactView({ model : john }), // this model parameter is accessed by view.options.model
+        johnDetailView  = new PersonDetailView({ model: john });
+
+    john.get("views").push(johnContactView);
+    john.get("views").push(johnDetailView);
+
+    var AppRouter = Backbone.Router.extend({
+        routes : { /* url mapping to function */
+            ""      : "home", // current page
+            "add"   : "add",  // current page#add
+            "close" : "home",  // current page#close
+            "people/:name" : "showPerson"
+        },
+
+        home : function () {
+            console.log("routing to home");
+        },
+
+        add : function () {
+            console.log("routing to add");
+        },
+
+        showPerson : function (name) {
+            console.log("showing person : " + name);
+        }
+    });
+
+    var myAppRouter = new AppRouter();
+
+    // Start Backbone history a necessary step for bookmarkable URL's
+    Backbone.history.start();
+    // we have to run start for the app router to start working
+
+</script>
+
+</body>
+</html>
