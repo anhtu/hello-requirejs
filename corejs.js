@@ -2560,6 +2560,20 @@ dc.ui.AccountDialog = dc.ui.Dialog.extend({
         this.center()
     }
 });
+
+/**
+ * represents the view for the Account
+ *
+ * @example
+ *      new dc.ui.AccountView({
+ *           model: b,
+ *           kind: "reviewer",
+ *           dialog: this
+ *      });
+ *
+ *  the AccountView contains a reference to the model Account
+ *
+ */
 dc.ui.AccountView = Backbone.View.extend({
     AVATAR_SIZES: {
         badge: 30,
@@ -2591,8 +2605,12 @@ dc.ui.AccountView = Backbone.View.extend({
         this.kind = a.kind;
         this.tagName = this.TAGS[this.kind];
         this.className = "account_view " + this.kind + (this.tagName == "tr" ? " not_draggable" : "");
+
+        /* AccountView can be nested inside Dialog */
         this.dialog = a.dialog || dc.app.accounts;
         Backbone.View.call(this, a);
+
+        /* depending on type of account, we use a different template */
         this.template = JST["account/" + this.kind];
         _.bindAll(this, "_onSuccess", "_onError");
         this._boundRender = _.bind(this.render, this, "display");
@@ -2776,6 +2794,8 @@ dc.ui.AccountView = Backbone.View.extend({
     _onSuccess: function (a, b) {
         this.model.invalid = false;
         this.setMode("display", "view");
+
+        /* this is how we trigger the change to the model */
         this.model.trigger("change");
         dc.ui.spinner.hide();
         if (this.model.newRecord) {
@@ -2795,6 +2815,7 @@ dc.ui.AccountView = Backbone.View.extend({
         this.dialog.error(b.errors && b.errors[0] || "Could not add the account.")
     }
 });
+
 dc.ui.ShareDialog = dc.ui.Dialog.extend({
     id: "share_dialog",
     className: "dialog",
@@ -7289,6 +7310,11 @@ dc.controllers.Searcher = Backbone.Router.extend({
         this.currentSearch = null
     }
 });
+
+/**
+ *  router for '/public/help'
+ *
+ */
 dc.controllers.Workspace = Backbone.Router.extend({
     routes: {
         "help/:page": "help",

@@ -1280,8 +1280,13 @@
             };
         });
 
-
-//If the value of the named property is a function then invoke it; otherwise, return it.
+    /**
+     *  If the value of the named property is a function then invoke it; otherwise, return it.
+     *
+     * @param object
+     * @param property
+     * @return {*}
+     */
     _.result = function(object, property) {
         if (object == null) return null;
         var value = object[property];

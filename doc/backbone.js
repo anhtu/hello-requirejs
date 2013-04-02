@@ -992,7 +992,7 @@
   // Creating a Backbone.View creates its initial element outside of the DOM,
   // if an existing element is not provided...
   var View = Backbone.View = function(options) {
-    this.cid = _.uniqueId('view');
+    this.cid = _.uniqueId('view');   /* generate a unique id for the view starting with 'view' */
     this._configure(options || {});
     this._ensureElement();
     this.initialize.apply(this, arguments);
@@ -1003,48 +1003,61 @@
   var delegateEventSplitter = /^(\S+)\s*(.*)$/;
 
   // List of view options to be merged as properties.
-  var viewOptions = ['model', 'collection', 'el', 'id', 'attributes', 'className', 'tagName', 'events'];
+    /**
+     *  model      : allowed to pass the model to the view
+     *
+     *  el         : a reference to the current DOM element of the view - called 'view element'
+     *  id         : id of the 'view element' in the DOM
+     *  attributes :
+     *  className  :
+     *  tagName    :
+     *  events     : mapping of DOM events and the view's method, each DOM events will trigger the view's method
+     */
+    var viewOptions = ['model', 'collection', 'el', 'id', 'attributes', 'className', 'tagName', 'events'];
 
-  // Set up all inheritable **Backbone.View** properties and methods.
-  _.extend(View.prototype, Events, {
+    // Set up all inheritable **Backbone.View** properties and methods.
+    /**
+     * extend View.prototype by Events and a bunch of default values
+     */
+    _.extend(View.prototype, Events, {
 
-    // The default `tagName` of a View's element is `"div"`.
-    tagName: 'div',
+        // The default `tagName` of a View's element is `"div"`.
+        tagName: 'div',
 
-    // jQuery delegate for element lookup, scoped to DOM elements within the
-    // current view. This should be prefered to global lookups where possible.
-    $: function(selector) {
-      return this.$el.find(selector);
-    },
+        // jQuery delegate for element lookup, scoped to DOM elements within the
+        // current view. This should be prefered to global lookups where possible.
+        $: function(selector) {
+            return this.$el.find(selector);
+        },
 
-    // Initialize is an empty function by default. Override it with your own
-    // initialization logic.
-    initialize: function(){},
+        // Initialize is an empty function by default. Override it with your own
+        // initialization logic.
+        initialize: function(){},
 
-    // **render** is the core function that your view should override, in order
-    // to populate its element (`this.el`), with the appropriate HTML. The
-    // convention is for **render** to always return `this`.
-    render: function() {
-      return this;
-    },
+        // **render** is the core function that your view should override, in order
+        // to populate its element (`this.el`), with the appropriate HTML. The
+        // convention is for **render** to always return `this`.
+        render: function() {
+            return this;
+        },
 
-    // Remove this view by taking the element out of the DOM, and removing any
-    // applicable Backbone.Events listeners.
-    remove: function() {
-      this.$el.remove();
-      this.stopListening();
-      return this;
-    },
+        // Remove this view by taking the element out of the DOM, and removing any
+        // applicable Backbone.Events listeners.
+        remove: function() {
+            this.$el.remove();
+            this.stopListening();
+            return this;
+        },
 
-    // Change the view's element (`this.el` property), including event
-    // re-delegation.
-    setElement: function(element, delegate) {
-      if (this.$el) this.undelegateEvents();
-      this.$el = element instanceof Backbone.$ ? element : Backbone.$(element);
-      this.el = this.$el[0];
-      if (delegate !== false) this.delegateEvents();
-      return this;
-    },
+        // Change the view's element (`this.el` property), including event
+        // re-delegation.
+        setElement: function(element, delegate) {
+            if (this.$el) this.undelegateEvents();
+            this.$el = element instanceof Backbone.$ ? element : Backbone.$(element);
+            this.el = this.$el[0];
+            if (delegate !== false) this.delegateEvents();
+            return this;
+        },
 
     // Set callbacks, where `this.events` is a hash of
     //
@@ -1061,7 +1074,14 @@
     // Omitting the selector binds the event to `this.el`.
     // This only works for delegate-able events: not `focus`, `blur`, and
     // not `change`, `submit`, and `reset` in Internet Explorer.
+        /**
+         * delegateEvents = setting callbacks for events
+         *
+         * @param events
+         * @return {*}
+         */
     delegateEvents: function(events) {
+      /* if events is null, we call events method on this or simple return property 'events' of this */
       if (!(events || (events = _.result(this, 'events')))) return this;
       this.undelegateEvents();
       for (var key in events) {
@@ -1526,9 +1546,14 @@
   // Helpers
   // -------
 
-  // Helper function to correctly set up the prototype chain, for subclasses.
-  // Similar to `goog.inherits`, but uses a hash of prototype properties and
-  // class properties to be extended.
+    /**
+     *  Helper function to correctly set up the prototype chain, for subclasses.
+     *
+     *  Similar to `goog.inherits`, but uses a hash of prototype properties and
+     *  class properties to be extended.
+     *
+     *  @return {Object} constructor function that inherits from current object that invokes the function
+     */
     var extend = function(protoProps, staticProps) {
         var parent = this;
         var child;
@@ -1544,25 +1569,32 @@
             child = function(){ return parent.apply(this, arguments); };
         }
 
-        // Add static properties to the constructor function, if supplied.
+        /**
+         *  Add static properties to the constructor function, if supplied.
+         *  These properties are STATIC, shared across instances
+         */
         _.extend(child, parent, staticProps);
 
-        // Set the prototype chain to inherit from `parent`, without calling
-        // `parent`'s constructor function.
+        /**
+         *  Set the prototype chain to inherit from `parent`, without calling
+         *  `parent`'s constructor function.
+         *
+         *  child.prototype.__proto__ --> Surrogate.prototype = parent.prototype
+         */
         var Surrogate = function(){ this.constructor = child; };
         Surrogate.prototype = parent.prototype;
         child.prototype = new Surrogate;
 
-    // Add prototype properties (instance properties) to the subclass,
-    // if supplied.
-    if (protoProps) _.extend(child.prototype, protoProps);
+        // Add prototype properties (instance properties) to the subclass,
+        // if supplied.
+        if (protoProps) _.extend(child.prototype, protoProps);
 
-    // Set a convenience property in case the parent's prototype is needed
-    // later.
-    child.__super__ = parent.prototype;
+        // Set a convenience property in case the parent's prototype is needed
+        // later.
+        child.__super__ = parent.prototype;
 
-    return child;
-  };
+        return child;
+    };
 
   // Set up inheritance for the model, collection, router, view and history.
   Model.extend = Collection.extend = Router.extend = View.extend = History.extend = extend;
