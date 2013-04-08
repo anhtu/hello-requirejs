@@ -5,6 +5,14 @@
 //     For all details and documentation:
 //     http://backbonejs.org
 
+/**
+ *
+ * [OK] Events
+ * [OK] extend()
+ *
+ *
+ */
+
 (function(){
 
   // Initial Setup
@@ -242,6 +250,15 @@
 
   // Create a new model with the specified attributes. A client id (`cid`)
   // is automatically generated and assigned for you.
+  /**
+   * constructor function for Model
+   *
+   * > assign unique id starting with c
+   * > ...
+   * > invoke initialize
+   *
+   * @type {Function}
+   */
   var Model = Backbone.Model = function(attributes, options) {
       var defaults;
       var attrs = attributes || {};
@@ -249,7 +266,7 @@
 
       this.cid = _.uniqueId('c');
       this.attributes = {};
-      /* extend this with options except from modelOptions { url, urlOption... }*/
+      /* extend this with options from modelOptions { url, urlOption... }*/
       _.extend(this, _.pick(options, modelOptions));
 
       /* assign attribute */
@@ -305,16 +322,16 @@
             return this.attributes[attr];
         },
 
-    // Get the HTML-escaped value of an attribute.
-    escape: function(attr) {
-      return _.escape(this.get(attr));
-    },
+        // Get the HTML-escaped value of an attribute.
+        escape: function(attr) {
+            return _.escape(this.get(attr));
+        },
 
-    // Returns `true` if the attribute contains a value that is not null
-    // or undefined.
-    has: function(attr) {
-      return this.get(attr) != null;
-    },
+        // Returns `true` if the attribute contains a value that is not null
+        // or undefined.
+        has: function(attr) {
+            return this.get(attr) != null;
+        },
 
     // Set a hash of model attributes on the object, firing `"change"`. This is
     // the core primitive operation of a model, updating the data and notifying
@@ -436,9 +453,11 @@
       return _.clone(this._previousAttributes);
     },
 
-    // Fetch the model from the server. If the server's representation of the
-    // model differs from its current attributes, they will be overridden,
-    // triggering a `"change"` event.
+    /**
+     * Fetch the model from the server. If the server's representation of the
+     * model differs from its current attributes, they will be overridden,
+     * triggering a `"change"` event.
+     */
     fetch: function(options) {
       options = options ? _.clone(options) : {};
       if (options.parse === void 0) options.parse = true;
@@ -1543,10 +1562,20 @@
   // Create the default Backbone.history.
   Backbone.history = new History;
 
-  // Helpers
-  // -------
+    /*============ Helpers ============*/
 
     /**
+     *  child = parent.extend(protoProps, staticProps)
+     *
+     *  returns a constructor function that
+     *  > inherits static props from parents and staticProps
+     *  > child.prototype is extended from protoProps
+     *  > if there's 'constructor' in protoProps, child is override to this 'constructor' function
+     *    otherwise, invoke the parent
+     *  > set up prototype chain:
+     *    child.prototype.__proto__ --> parent.prototype
+     *    so that any instances of child can see properties in parent.prototype
+     *
      *  Helper function to correctly set up the prototype chain, for subclasses.
      *
      *  Similar to `goog.inherits`, but uses a hash of prototype properties and

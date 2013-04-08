@@ -901,10 +901,19 @@
         return obj;
     };
 
-//Return a copy of the object only containing the whitelisted properties.
 
-
-        _.pick = function(obj) {
+    /**
+     * object = _.pick(initialObject, whiteListedKey)
+     *
+     * return new object as copy of initialObject but with properties only in whiteListedKey
+     *
+     * Return a copy of the object, filtered to only have values for the whitelisted keys (or array of valid keys).
+     *
+     * @see:
+     *      _.pick({name : 'moe', age: 50, userid : 'moe1'}, 'name', 'age');
+     *      => {name : 'moe', age : 50}
+     */
+    _.pick = function(obj) {
         var copy = {};
         var keys = concat.apply(ArrayProto, slice.call(arguments, 1));
         each(keys, function(key) {
@@ -925,10 +934,19 @@
         return copy;
     };
 
-//Fill in a given object with default properties.
 
-
-        _.defaults = function(obj) {
+    /**
+     *  _.defaults(object, *defaults)
+     *
+     *  Fill in null and undefined properties in object with values from the defaults objects,
+     *  and return the object. As soon as the property is filled, further defaults will have no effect.
+     *
+     * @see:
+     *      var iceCream = {flavor : "chocolate"};
+     *      _.defaults(iceCream, {flavor : "vanilla", sprinkles : "lots"});
+     *      => {flavor : "chocolate", sprinkles : "lots"}
+     */
+    _.defaults = function(obj) {
         each(slice.call(arguments, 1), function(source) {
             if (source) {
                 for (var prop in source) {
@@ -1281,7 +1299,12 @@
         });
 
     /**
-     *  If the value of the named property is a function then invoke it; otherwise, return it.
+     *  'result' of the 'property' onto the 'object'
+     *  if 'property' = attribute ==> return value of attribute
+     *  if 'property' = function  ==> return result of function
+     *
+     *  If the value of the named property is a function then invoke it and return its result
+     *  otherwise, return it the value of the named property
      *
      * @param object
      * @param property
