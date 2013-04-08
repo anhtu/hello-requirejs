@@ -1,18 +1,47 @@
 /**
- * Author: tuna
- * Date: 4/5/13
- * Time: 9:25 AM
+ * User: anhtu
+ * Date: 4/6/13
+ * Time: 8:44 AM
  */
-var http    = require('http'),
-    express = require('express'),
-    fs      = require('fs'),
-    request = require('request'),
-    q       = require('q');
-    //redis   = require('redis');
 
-var app = express();
-//var redisClient = redis.createClient();
+/**
+ *
+ * app.js is the main entry for Express application
+ * it contains:
+ *
+ * - config of express
+ *
+ */
 
+/*=== MODULE IMPORT ===*/
+var http    = require('http')
+  , express = require('express')
+  , fs      = require('fs')
+  , request = require('request')
+  , app = express();
+
+
+/*=== SETTING ===*/
+
+/* set directory to look for views */
+app.set("views", __dirname + "/views");
+
+/* set rendering engine */
+//app.set("view engine", "jade");
+
+/*=== MIDDLEWARE ===*/
+
+/* 1 - logging */
+app.use(function (req, res, next) {
+    console.log(" a request arrives on " + req.url);
+    next();
+});
+
+/* 2 - print out the header */
+app.use(function (req, res, next) {
+    console.log("====== header ======= \n" + JSON.stringify(req.headers));
+    next();
+});
 
 var COUCHDB_HOST = "http://localhost:5984/",
     DB_NAME      = "tweets";
@@ -76,7 +105,7 @@ app.get("/tweets/:username", function (req, res) {
      *   whenever the content is available, execute the callback
      *     pass in err, response stream object and body of the response
      * */
-     request(_options.url, function (err, response, body) {
+    request(_options.url, function (err, response, body) {
         var tweets = JSON.parse(body);
 
         console.log("request content from twitter");
@@ -84,8 +113,8 @@ app.get("/tweets/:username", function (req, res) {
                 method    : "PUT",
                 uri       : COUCHDB_HOST + DB_NAME + "/" + _username,
                 multipart : [ { 'content-type' : 'application/json',
-                                body : JSON.stringify({ "tweets" : body })
-                              } ]
+                    body : JSON.stringify({ "tweets" : body })
+                } ]
             },
 
             function (err, response, body) {
